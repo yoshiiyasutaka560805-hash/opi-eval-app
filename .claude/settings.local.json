@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path . -Depth 1)",
+      "Bash(npm run *)",
+      "PowerShell(taskkill /PID 32568 /F)"
+    ]
+  }
+}
