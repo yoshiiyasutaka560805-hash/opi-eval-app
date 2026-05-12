@@ -3,7 +3,9 @@
     "allow": [
       "Bash(Get-ChildItem -Path . -Depth 1)",
       "Bash(npm run *)",
-      "PowerShell(taskkill /PID 32568 /F)"
+      "PowerShell(taskkill /PID 32568 /F)",
+      "Bash(npm install *)",
+      "Bash(npx create-next-app@latest opi-eval-app --typescript --tailwind --app --no-git --no-eslint --skip-install)"
     ]
   }
 }
