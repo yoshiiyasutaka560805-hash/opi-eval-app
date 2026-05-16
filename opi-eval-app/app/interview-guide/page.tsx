@@ -1,3 +1,5 @@
+'use client';
+
 import { interviewQuestions, caringAptiudeScoringAnchors } from '@/data/interview-questions';
 
 export default function InterviewGuidePage() {

@@ -83,6 +83,8 @@ export interface EvaluationScore {
 export interface Evaluation {
   id: string;
   candidate_id: string;
+  candidate_name: string;
+  client_name: string;
   transcription: string;
 
   // 現場安全能力評価 (各20点, 計80点内部)
@@ -131,15 +133,11 @@ export interface Evaluation {
 
   // AI合計 (0-140内部)
   ai_total: number;
-  display_score: number; // 0-100 (AI分のみ, ÷1.6四捨五入)
-
-  // 感性加点 (0-20)
-  impression_score: number;
-  impression_memo: string;
+  display_score: number; // 0-100 (÷1.6四捨五入)
 
   // 最終スコア
-  total_score_internal: number; // 0-160
-  total_display_score: number; // 0-100 (感性込み)
+  total_score_internal: number; // 0-140
+  total_display_score: number; // 0-100
 
   // 判定
   risk_flags: RiskFlags;
