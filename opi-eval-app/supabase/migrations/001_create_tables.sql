@@ -1,131 +1,113 @@
 -- Create clients table (施設マスタ)
-create table if not exists public.clients (
-  id uuid default gen_random_uuid() primary key,
-  name text not null,
-  facility_type text,
-  contact_name text,
-  safety_threshold_pct int2 default 50,
-  total_threshold_pct int2 default 80,
-  created_at timestamp with time zone default now()
+CREATE TABLE IF NOT EXISTS clients (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  facility_type TEXT NOT NULL,
+  contact_name TEXT NOT NULL,
+  safety_threshold_pct SMALLINT DEFAULT 50,
+  total_threshold_pct SMALLINT DEFAULT 80,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
-
-alter table public.clients enable row level security;
 
 -- Create candidates table (受験者)
-create table if not exists public.candidates (
-  id uuid default gen_random_uuid() primary key,
-  client_id uuid not null references public.clients(id) on delete cascade,
-  name text not null,
-  nationality text,
-  birthdate date,
-  visa_type text not null check (visa_type in ('特定技能1号', '介護')),
-  native_language text,
-  care_experience boolean default false,
-  jlpt_level text,
-  jft_score int2,
-  interview_date date,
-  created_at timestamp with time zone default now()
+CREATE TABLE IF NOT EXISTS candidates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  nationality TEXT NOT NULL,
+  birthdate DATE NOT NULL,
+  visa_type TEXT NOT NULL CHECK (visa_type IN ('特定技能1号', '介護')),
+  native_language TEXT NOT NULL,
+  care_experience BOOLEAN DEFAULT false,
+  jlpt_level TEXT CHECK (jlpt_level IN ('N1', 'N2', 'N3', 'N4', 'N5')),
+  jft_score SMALLINT,
+  interview_date DATE NOT NULL,
+  submission_count SMALLINT DEFAULT 0,
+  last_submitted_at TIMESTAMPTZ,
+  submission_status TEXT NOT NULL DEFAULT 'submitted' CHECK (submission_status IN ('submitted', 'resubmission_requested', 'resubmitted')),
+  submission_history JSONB DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
-
-alter table public.candidates enable row level security;
-create index idx_candidates_client_id on public.candidates(client_id);
-create index idx_candidates_interview_date on public.candidates(interview_date);
 
 -- Create evaluations table (採点結果)
-create table if not exists public.evaluations (
-  id uuid default gen_random_uuid() primary key,
-  candidate_id uuid not null references public.candidates(id) on delete cascade,
-  transcription text not null,
+CREATE TABLE IF NOT EXISTS evaluations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  candidate_id UUID NOT NULL REFERENCES candidates(id) ON DELETE CASCADE,
+  candidate_name TEXT NOT NULL,
+  client_name TEXT NOT NULL,
+  transcription TEXT NOT NULL,
 
   -- 現場安全能力評価 (各20点, 計80点内部)
-  instruction_comprehension int2,
-  instruction_comprehension_reason text,
-  instruction_evidence text,
+  instruction_comprehension SMALLINT,
+  instruction_comprehension_reason TEXT,
+  instruction_evidence TEXT,
 
-  information_reporting int2,
-  information_reporting_reason text,
-  information_evidence text,
+  information_reporting SMALLINT,
+  information_reporting_reason TEXT,
+  information_evidence TEXT,
 
-  emergency_communication int2,
-  emergency_communication_reason text,
-  emergency_evidence text,
+  emergency_communication SMALLINT,
+  emergency_communication_reason TEXT,
+  emergency_evidence TEXT,
 
-  confirmation_behavior int2,
-  confirmation_behavior_reason text,
-  confirmation_evidence text,
+  confirmation_behavior SMALLINT,
+  confirmation_behavior_reason TEXT,
+  confirmation_evidence TEXT,
 
-  safety_total int2,
+  safety_total SMALLINT,
 
   -- 言語能力評価 (各20点, 計40点内部)
-  vocabulary_grammar int2,
-  vocabulary_grammar_reason text,
+  vocabulary_grammar SMALLINT,
+  vocabulary_grammar_reason TEXT,
 
-  discourse_structure int2,
-  discourse_structure_reason text,
+  discourse_structure SMALLINT,
+  discourse_structure_reason TEXT,
 
-  language_total int2,
-  language_fail_flag boolean default false,
+  language_total SMALLINT,
+  language_fail_flag BOOLEAN DEFAULT false,
 
   -- 介護適性評価 (各5点, 計20点内部)
-  care_communication int2,
-  care_communication_reason text,
+  care_communication SMALLINT,
+  care_communication_reason TEXT,
 
-  care_resilience int2,
-  care_resilience_reason text,
+  care_resilience SMALLINT,
+  care_resilience_reason TEXT,
 
-  care_safety_awareness int2,
-  care_safety_awareness_reason text,
+  care_safety_awareness SMALLINT,
+  care_safety_awareness_reason TEXT,
 
-  care_culture_fit int2,
-  care_culture_fit_reason text,
+  care_culture_fit SMALLINT,
+  care_culture_fit_reason TEXT,
 
-  care_total int2,
+  care_total SMALLINT,
 
   -- AI合計 (0-140内部)
-  ai_total int2,
-  display_score int2,
-
-  -- 感性加点 (0-20)
-  impression_score int2 default 0,
-  impression_memo text,
+  ai_total SMALLINT,
+  display_score SMALLINT,
 
   -- 最終スコア
-  total_score_internal int2,
-  total_display_score int2,
+  total_score_internal SMALLINT,
+  total_display_score SMALLINT,
 
   -- 判定
-  risk_flags jsonb default '{"no_confirmation": false, "no_emergency_vocab": false, "only_wakarimashita": false, "disorganized_report": false}'::jsonb,
-  transcription_quality_warning boolean default false,
-  conversation_level text,
-  verdict text not null check (verdict in ('recommended', 'conditional', 'rejected')),
-  recommended_actions text,
+  risk_flags JSONB,
+  transcription_quality_warning BOOLEAN DEFAULT false,
+  conversation_level TEXT CHECK (conversation_level IN ('Lv.1', 'Lv.2', 'Lv.3', 'Lv.4', 'Lv.5', 'Lv.6')),
+  verdict TEXT CHECK (verdict IN ('recommended', 'conditional', 'rejected')),
+  recommended_actions TEXT,
 
   -- コメント
-  strengths text,
-  improvements text,
-  care_assessment text,
-  interviewer_comment text,
+  strengths TEXT,
+  improvements TEXT,
+  care_assessment TEXT,
+  interviewer_comment TEXT,
 
-  raw_response jsonb,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
+  raw_response JSONB,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-alter table public.evaluations enable row level security;
-create index idx_evaluations_candidate_id on public.evaluations(candidate_id);
-create index idx_evaluations_created_at on public.evaluations(created_at);
-create index idx_evaluations_verdict on public.evaluations(verdict);
-
--- Create updated_at trigger for evaluations
-create or replace function update_evaluations_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-
-create trigger update_evaluations_updated_at
-before update on public.evaluations
-for each row
-execute function update_evaluations_updated_at();
+-- Create indexes for better query performance
+CREATE INDEX idx_candidates_client_id ON candidates(client_id);
+CREATE INDEX idx_evaluations_candidate_id ON evaluations(candidate_id);
+CREATE INDEX idx_evaluations_created_at ON evaluations(created_at DESC);

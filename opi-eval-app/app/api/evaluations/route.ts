@@ -8,13 +8,75 @@ import { v4 as uuidv4 } from 'uuid';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { transcription, candidateName, clientName } = body;
+    let { transcription, candidateName, clientName, candidateId } = body;
 
     if (!transcription || !candidateName || !clientName) {
       return NextResponse.json(
         { error: '必須フィールドが不足しています' },
         { status: 400 }
       );
+    }
+
+    // Step 0: If no candidateId provided, create a new candidate
+    if (!candidateId) {
+      candidateId = uuidv4();
+
+      // Get or create client
+      let clientId = null;
+      const { data: existingClient } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('name', clientName)
+        .single();
+
+      if (existingClient) {
+        clientId = existingClient.id;
+      } else {
+        // Create new client if not exists
+        const { data: newClient, error: clientError } = await supabase
+          .from('clients')
+          .insert([{
+            name: clientName,
+            facility_type: '',
+            contact_name: '',
+            safety_threshold_pct: 50,
+            total_threshold_pct: 80,
+          }])
+          .select('id')
+          .single();
+
+        if (newClient) {
+          clientId = newClient.id;
+        }
+      }
+
+      // Create candidate with all required fields
+      const now = new Date().toISOString();
+      const { error: candidateError } = await supabase.from('candidates').insert([
+        {
+          id: candidateId,
+          name: candidateName,
+          client_id: clientId || '00000000-0000-0000-0000-000000000000',
+          nationality: '未設定',
+          birthdate: new Date().toISOString().split('T')[0],
+          visa_type: '特定技能1号',
+          native_language: '未設定',
+          care_experience: false,
+          interview_date: now,
+          submission_count: 1,
+          last_submitted_at: now,
+          submission_status: 'submitted',
+          submission_history: [{ submitted_at: now, status: 'submitted' }],
+        }
+      ]);
+
+      if (candidateError) {
+        console.error('Failed to create candidate:', candidateError);
+        return NextResponse.json(
+          { error: '受験者の登録に失敗しました' },
+          { status: 500 }
+        );
+      }
     }
 
     // Step 1: Call Claude API to evaluate
@@ -26,10 +88,7 @@ export async function POST(request: NextRequest) {
     // Step 3: Determine verdict (using default thresholds)
     const verdict = determineVerdict(evaluationScore, scoring, 50, 80);
 
-    // Step 4: Create or get candidate record
-    // For now, we'll create temporary records with just the names
-    // In a full implementation, we'd look up existing clients and create proper references
-    const candidateId = uuidv4();
+    // Step 4: Use provided candidate ID or generated one
     const evaluationId = uuidv4();
 
     // Step 5: Calculate final display scores (before impression score is added)

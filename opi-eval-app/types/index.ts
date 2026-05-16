@@ -13,6 +13,12 @@ export interface Client {
   created_at: string;
 }
 
+export interface SubmissionHistory {
+  submitted_at: string;
+  status: 'submitted' | 'resubmission_requested' | 'resubmitted';
+  notes?: string;
+}
+
 export interface Candidate {
   id: string;
   client_id: string;
@@ -25,6 +31,12 @@ export interface Candidate {
   jlpt_level?: JLPTLevel;
   jft_score?: number;
   interview_date: string;
+  submission_count: number;
+  last_submitted_at: string;
+  submission_status: 'submitted' | 'resubmission_requested' | 'resubmitted';
+  submission_history: SubmissionHistory[];
+  user_pdf_url?: string;
+  result_pdf_url?: string;
   created_at: string;
 }
 

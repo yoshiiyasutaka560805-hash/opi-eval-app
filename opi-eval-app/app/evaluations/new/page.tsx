@@ -14,13 +14,13 @@ export default function NewEvaluationPage() {
     e.preventDefault();
     setError(null);
 
-    if (!transcription.trim()) {
-      setError('文字起こしを入力してください');
+    if (!candidateName.trim()) {
+      setError('受験者名を入力してください');
       return;
     }
 
-    if (!candidateName.trim()) {
-      setError('受験者名を入力してください');
+    if (!transcription.trim()) {
+      setError('文字起こしを入力してください');
       return;
     }
 
@@ -95,7 +95,7 @@ export default function NewEvaluationPage() {
             </div>
           )}
 
-          {/* Candidate Info */}
+          {/* Candidate Name Input */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
@@ -105,7 +105,7 @@ export default function NewEvaluationPage() {
                 type="text"
                 value={candidateName}
                 onChange={(e) => setCandidateName(e.target.value)}
-                placeholder="例: 田中太郎"
+                placeholder="例: グエン・ティ・ハー"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 disabled={isLoading}
               />

@@ -193,7 +193,7 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '25px', marginBottom: '30px' }}>
               {/* Card 1: Total Score */}
               <div style={{ border: '3px solid #2563eb', borderRadius: '12px', padding: '28px 20px', backgroundColor: '#eff6ff', textAlign: 'center' }}>
-                <p style={{ fontSize: '13px', color: '#1e40af', margin: '0 0 12px 0', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.3px' }}>💯 総合スコア<br />（AI採点）</p>
+                <p style={{ fontSize: '20px', color: '#1e40af', margin: '0 0 12px 0', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.3px' }}>💯 総合スコア<br />（AI採点）</p>
                 <p style={{ fontSize: '56px', fontWeight: 'bold', color: '#2563eb', margin: '0', lineHeight: '1' }}>
                   {evaluation.display_score}
                 </p>
@@ -202,14 +202,14 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
 
               {/* Card 2: Conversation Level */}
               <div style={{ border: '3px solid #059669', borderRadius: '12px', padding: '28px 20px', backgroundColor: '#ecfdf5', textAlign: 'center' }}>
-                <p style={{ fontSize: '13px', color: '#065f46', margin: '0 0 12px 0', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.3px' }}>🗣️ 会話レベル</p>
+                <p style={{ fontSize: '20px', color: '#065f46', margin: '0 0 12px 0', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.3px' }}>🗣️ 会話レベル</p>
                 <p style={{ fontSize: '52px', fontWeight: 'bold', color: '#059669', margin: '0' }}>{evaluation.conversation_level}</p>
                 <p style={{ fontSize: '14px', color: '#6b7280', margin: '8px 0 0 0', fontWeight: '500' }}>6段階中</p>
               </div>
 
               {/* Card 3: Interviewer Score - Empty for input */}
               <div style={{ border: '3px solid #9333ea', borderRadius: '12px', padding: '28px 20px', backgroundColor: '#faf5ff', textAlign: 'center' }}>
-                <p style={{ fontSize: '13px', color: '#6b21a8', margin: '0 0 12px 0', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.3px' }}>👤 面接官<br />総合評価</p>
+                <p style={{ fontSize: '20px', color: '#6b21a8', margin: '0 0 12px 0', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.3px' }}>👤 面接官<br />総合評価</p>
                 <p style={{ fontSize: '44px', fontWeight: 'bold', color: '#9333ea', margin: '0', letterSpacing: '2px' }}>─────</p>
                 <p style={{ fontSize: '16px', color: '#6b7280', margin: '8px 0 0 0', fontWeight: '500' }}>/100</p>
               </div>
@@ -222,17 +222,17 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* PAGE 2 - JOPT EVALUATION (5 ITEMS WITH DETAILS) */}
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ pageBreakBefore: 'always', marginBottom: '20px' }}>
             <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 20px 0', borderLeft: '6px solid #2563eb', paddingLeft: '18px', letterSpacing: '-0.5px' }}>日本語能力評価（5項目詳細）</h2>
 
             {/* Item 1 - Instruction Comprehension */}
             <div style={{ marginBottom: '10px', padding: '14px', border: '3px solid #2563eb', borderLeft: '6px solid #2563eb', borderRadius: '10px', backgroundColor: '#f8fbff' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#2563eb', margin: '0' }}>1. 指示理解力</h3>
-                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#2563eb', margin: '0', lineHeight: '1.3' }}>評価：標準<br />{evaluation.instruction_comprehension}/20</p>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#2563eb', margin: '0' }}>1. 指示理解力</h3>
+                <p style={{ fontSize: '26px', fontWeight: 'bold', color: '#2563eb', margin: '0', lineHeight: '1.3' }}>評価：{evaluation.instruction_comprehension >= 16 ? '良好' : evaluation.instruction_comprehension >= 12 ? '標準' : evaluation.instruction_comprehension >= 8 ? '要改善' : '未確認'}<br />{evaluation.instruction_comprehension}/20</p>
               </div>
-              <p style={{ fontSize: '18px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>指示を正確に理解し、その通りに実行できるか。確認行動と正確な報告ができているか。</p>
-              <p style={{ fontSize: '13px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #2563eb', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '22px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>指示を正確に理解し、その通りに実行できるか。確認行動と正確な報告ができているか。</p>
+              <p style={{ fontSize: '18px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #2563eb', lineHeight: '1.5' }}>
                 <strong style={{ color: '#2563eb' }}>根拠：</strong><br />{evaluation.instruction_evidence || 'ここに文字起こしからの根拠が表示されます'}
               </p>
             </div>
@@ -240,11 +240,11 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
             {/* Item 2 - Information Reporting */}
             <div style={{ marginBottom: '10px', padding: '14px', border: '3px solid #059669', borderLeft: '6px solid #059669', borderRadius: '10px', backgroundColor: '#f0fdf4' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#059669', margin: '0' }}>2. 流ちょうさ</h3>
-                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#059669', margin: '0', lineHeight: '1.3' }}>評価：標準<br />{evaluation.information_reporting}/20</p>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#059669', margin: '0' }}>2. 流ちょうさ</h3>
+                <p style={{ fontSize: '26px', fontWeight: 'bold', color: '#059669', margin: '0', lineHeight: '1.3' }}>評価：{evaluation.information_reporting >= 16 ? '良好' : evaluation.information_reporting >= 12 ? '標準' : evaluation.information_reporting >= 8 ? '要改善' : '未確認'}<br />{evaluation.information_reporting}/20</p>
               </div>
-              <p style={{ fontSize: '18px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>会話のテンポ・スムーズさ。話りやや長い沈黙なく自然に応答できているか。</p>
-              <p style={{ fontSize: '13px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #059669', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '22px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>会話のテンポ・スムーズさ。話りやや長い沈黙なく自然に応答できているか。</p>
+              <p style={{ fontSize: '18px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #059669', lineHeight: '1.5' }}>
                 <strong style={{ color: '#059669' }}>根拠：</strong><br />{evaluation.information_evidence || 'ここに文字起こしからの根拠が表示されます'}
               </p>
             </div>
@@ -252,11 +252,11 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
             {/* Item 3 - Discourse Structure */}
             <div style={{ marginBottom: '10px', padding: '14px', border: '3px solid #9333ea', borderLeft: '6px solid #9333ea', borderRadius: '10px', backgroundColor: '#faf5ff' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#9333ea', margin: '0' }}>3. 談話構成</h3>
-                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#9333ea', margin: '0', lineHeight: '1.3' }}>評価：良好<br />{evaluation.discourse_structure}/20</p>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#9333ea', margin: '0' }}>3. 談話構成</h3>
+                <p style={{ fontSize: '26px', fontWeight: 'bold', color: '#9333ea', margin: '0', lineHeight: '1.3' }}>評価：{evaluation.discourse_structure >= 16 ? '良好' : evaluation.discourse_structure >= 12 ? '標準' : evaluation.discourse_structure >= 8 ? '要改善' : '未確認'}<br />{evaluation.discourse_structure}/20</p>
               </div>
-              <p style={{ fontSize: '18px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>話の論理性・整理力。情報を体系的かつ明確に伝えられているか。意味が不明確でないか。</p>
-              <p style={{ fontSize: '13px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #9333ea', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '22px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>話の論理性・整理力。情報を体系的かつ明確に伝えられているか。意味が不明確でないか。</p>
+              <p style={{ fontSize: '18px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #9333ea', lineHeight: '1.5' }}>
                 <strong style={{ color: '#9333ea' }}>根拠：</strong><br />{evaluation.emergency_evidence || 'ここに文字起こしからの根拠が表示されます'}
               </p>
             </div>
@@ -264,11 +264,11 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
             {/* Item 4 - Vocabulary */}
             <div style={{ marginBottom: '10px', padding: '14px', border: '3px solid #ea580c', borderLeft: '6px solid #ea580c', borderRadius: '10px', backgroundColor: '#fff7ed' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#ea580c', margin: '0' }}>4. 語彙</h3>
-                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#ea580c', margin: '0', lineHeight: '1.3' }}>評価：標準<br />{evaluation.vocabulary_grammar}/20</p>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#ea580c', margin: '0' }}>4. 語彙</h3>
+                <p style={{ fontSize: '26px', fontWeight: 'bold', color: '#ea580c', margin: '0', lineHeight: '1.3' }}>評価：{evaluation.vocabulary_grammar >= 16 ? '良好' : evaluation.vocabulary_grammar >= 12 ? '標準' : evaluation.vocabulary_grammar >= 8 ? '要改善' : '未確認'}<br />{evaluation.vocabulary_grammar}/20</p>
               </div>
-              <p style={{ fontSize: '18px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>介護現場で必要な語彙の範囲と正確性。医療・介護用語が適切に使われているか。</p>
-              <p style={{ fontSize: '13px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #ea580c', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '22px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>介護現場で必要な語彙の範囲と正確性。医療・介護用語が適切に使われているか。</p>
+              <p style={{ fontSize: '18px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #ea580c', lineHeight: '1.5' }}>
                 <strong style={{ color: '#ea580c' }}>根拠：</strong><br />{evaluation.vocabulary_grammar_reason || 'ここに文字起こしからの根拠が表示されます'}
               </p>
             </div>
@@ -276,22 +276,22 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
             {/* Item 5 - Grammar */}
             <div style={{ marginBottom: '10px', padding: '14px', border: '3px solid #dc2626', borderLeft: '6px solid #dc2626', borderRadius: '10px', backgroundColor: '#fef2f2' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#dc2626', margin: '0' }}>5. 文法</h3>
-                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#dc2626', margin: '0', lineHeight: '1.3' }}>評価：要改善<br />{evaluation.discourse_structure}/20</p>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc2626', margin: '0' }}>5. 文法</h3>
+                <p style={{ fontSize: '26px', fontWeight: 'bold', color: '#dc2626', margin: '0', lineHeight: '1.3' }}>評価：{evaluation.vocabulary_grammar >= 16 ? '良好' : evaluation.vocabulary_grammar >= 12 ? '標準' : evaluation.vocabulary_grammar >= 8 ? '要改善' : '未確認'}<br />{evaluation.vocabulary_grammar}/20</p>
               </div>
-              <p style={{ fontSize: '18px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>文法的な正確性。日本語の正しい構成で文が構成されているか。意味が通じない誤りがないか。</p>
-              <p style={{ fontSize: '13px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #dc2626', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '22px', color: '#374151', margin: '6px 0 6px 0', lineHeight: '1.4' }}>文法的な正確性。日本語の正しい構成で文が構成されているか。意味が通じない誤りがないか。</p>
+              <p style={{ fontSize: '18px', color: '#374151', margin: '0', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '6px', borderLeft: '4px solid #dc2626', lineHeight: '1.5' }}>
                 <strong style={{ color: '#dc2626' }}>根拠：</strong><br />{evaluation.discourse_structure_reason || 'ここに文字起こしからの根拠が表示されます'}
               </p>
             </div>
           </div>
 
           {/* PAGE 2 - RADAR CHARTS */}
-          <div style={{ marginTop: '400px', marginBottom: '50px', display: 'flex', justifyContent: 'center', gap: '40px', pageBreakBefore: 'always' }}>
+          <div style={{ marginTop: '130px', marginBottom: '40px', display: 'flex', justifyContent: 'center', gap: '40px', pageBreakBefore: 'always' }}>
             {/* 現場安全能力レーダー */}
-            <div style={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '12px', border: '2px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', minWidth: '450px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 25px 0', textAlign: 'center', letterSpacing: '-0.3px' }}>現場安全能力</h3>
-              <ResponsiveContainer width="100%" height={400}>
+            <div style={{ backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', border: '2px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', minWidth: '450px' }}>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 15px 0', textAlign: 'center', letterSpacing: '-0.3px' }}>現場安全能力</h3>
+              <ResponsiveContainer width="100%" height={300}>
                 <RadarChart
                   data={[
                     { name: '指示理解力', score: Math.round((evaluation.instruction_comprehension / 20) * 100), fullMark: 100 },
@@ -311,9 +311,9 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
             </div>
 
             {/* 介護適性レーダー */}
-            <div style={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '12px', border: '2px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', minWidth: '450px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 25px 0', textAlign: 'center', letterSpacing: '-0.3px' }}>介護適性</h3>
-              <ResponsiveContainer width="100%" height={400}>
+            <div style={{ backgroundColor: '#ffffff', padding: '20px', borderRadius: '12px', border: '2px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', minWidth: '450px' }}>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 15px 0', textAlign: 'center', letterSpacing: '-0.3px' }}>介護適性</h3>
+              <ResponsiveContainer width="100%" height={300}>
                 <RadarChart
                   data={[
                     { name: 'コミュニケーション', score: Math.round((evaluation.care_communication / 5) * 100), fullMark: 100 },
@@ -334,19 +334,19 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* SCORE DETAILS */}
-          <div style={{ marginBottom: '50px', display: 'flex', justifyContent: 'center', gap: '40px' }}>
-            <div style={{ backgroundColor: '#f9fafb', padding: '28px', borderRadius: '10px', border: '2px solid #e5e7eb', minWidth: '400px' }}>
-              <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 24px 0', letterSpacing: '-0.3px' }}>スコア詳細</h4>
-              <div style={{ fontSize: '17px', lineHeight: '2.4', color: '#374151' }}>
+          <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center', gap: '40px' }}>
+            <div style={{ backgroundColor: '#f9fafb', padding: '18px', borderRadius: '10px', border: '2px solid #e5e7eb', minWidth: '450px' }}>
+              <h4 style={{ fontSize: '25px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 16px 0', letterSpacing: '-0.3px' }}>スコア詳細</h4>
+              <div style={{ fontSize: '20px', lineHeight: '1.8', color: '#374151', textAlign: 'center' }}>
                 <div>指示理解力: <strong style={{ color: '#2563eb' }}>{Math.round((evaluation.instruction_comprehension / 20) * 100)}/100</strong></div>
                 <div>情報報告精度: <strong style={{ color: '#059669' }}>{Math.round((evaluation.information_reporting / 20) * 100)}/100</strong></div>
                 <div>緊急対応能力: <strong style={{ color: '#dc2626' }}>{Math.round((evaluation.emergency_communication / 20) * 100)}/100</strong></div>
                 <div>確認行動: <strong style={{ color: '#ea580c' }}>{Math.round((evaluation.confirmation_behavior / 20) * 100)}/100</strong></div>
               </div>
             </div>
-            <div style={{ backgroundColor: '#f9fafb', padding: '28px', borderRadius: '10px', border: '2px solid #e5e7eb', minWidth: '400px' }}>
-              <h4 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 24px 0', letterSpacing: '-0.3px' }}>スコア詳細</h4>
-              <div style={{ fontSize: '17px', lineHeight: '2.4', color: '#374151' }}>
+            <div style={{ backgroundColor: '#f9fafb', padding: '18px', borderRadius: '10px', border: '2px solid #e5e7eb', minWidth: '450px' }}>
+              <h4 style={{ fontSize: '25px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 16px 0', letterSpacing: '-0.3px' }}>スコア詳細</h4>
+              <div style={{ fontSize: '20px', lineHeight: '1.8', color: '#374151', textAlign: 'center' }}>
                 <div>コミュニケーション: <strong style={{ color: '#0284c7' }}>{Math.round((evaluation.care_communication / 5) * 100)}/100</strong></div>
                 <div>ストレス耐性・継続: <strong style={{ color: '#0284c7' }}>{Math.round((evaluation.care_resilience / 5) * 100)}/100</strong></div>
                 <div>安全意識: <strong style={{ color: '#dc2626' }}>{Math.round((evaluation.care_safety_awareness / 5) * 100)}/100</strong></div>
@@ -357,34 +357,34 @@ export default function EvaluationDetailPage({ params }: { params: Promise<{ id:
 
           {/* PAGE 4 - SUMMARY */}
           <div style={{ borderRadius: '14px', border: '2px solid #e5e7eb', padding: '35px', backgroundColor: '#ffffff' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 32px 0', letterSpacing: '-0.5px' }}>総合評価</h2>
+            <h2 style={{ fontSize: '30px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 32px 0', letterSpacing: '-0.5px' }}>総合評価</h2>
 
             {/* Strengths */}
             <div style={{ marginBottom: '26px', padding: '20px', backgroundColor: '#f0fdf4', border: '2px solid #10b981', borderRadius: '10px' }}>
-              <p style={{ fontSize: '14px', fontWeight: '700', color: '#047857', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>✅ 強み</p>
-              <p style={{ fontSize: '15px', color: '#065f46', margin: '0', lineHeight: '1.9', whiteSpace: 'pre-wrap' }}>
+              <p style={{ fontSize: '20px', fontWeight: '700', color: '#047857', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>✅ 強み</p>
+              <p style={{ fontSize: '22px', color: '#065f46', margin: '0', lineHeight: '1.9', whiteSpace: 'pre-wrap' }}>
                 {evaluation.strengths || '1）4年間の日本での介護実務経験と副主任としてのリーダーシップ経験\n2）デイサービスと有料老人ホームの両方の経験\n3）日本語でのコミュニケーション能力が高く、介護専門用語も理解\n4）失敗から学び改善する姿勢'}
               </p>
             </div>
 
             {/* Improvements */}
             <div style={{ marginBottom: '26px', padding: '20px', backgroundColor: '#fff7ed', border: '2px solid #f97316', borderRadius: '10px' }}>
-              <p style={{ fontSize: '14px', fontWeight: '700', color: '#92400e', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>📋 改善点</p>
-              <p style={{ fontSize: '15px', color: '#78350f', margin: '0', lineHeight: '1.9', whiteSpace: 'pre-wrap' }}>
+              <p style={{ fontSize: '20px', fontWeight: '700', color: '#92400e', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>📋 改善点</p>
+              <p style={{ fontSize: '22px', color: '#78350f', margin: '0', lineHeight: '1.9', whiteSpace: 'pre-wrap' }}>
                 {evaluation.improvements || '1）面接中の能動的な確認質問が少ない\n2）より高度な医療用語や緊急時対応の語彙の習得'}
               </p>
             </div>
 
             {/* 介護適性評価所見 */}
             <div style={{ marginBottom: '26px', padding: '20px', backgroundColor: '#f0f9ff', border: '2px solid #0284c7', borderRadius: '10px' }}>
-              <p style={{ fontSize: '14px', fontWeight: '700', color: '#0369a1', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>🏥 介護適性評価</p>
-              <p style={{ fontSize: '15px', color: '#0c4a6e', margin: '0', lineHeight: '1.9', whiteSpace: 'pre-wrap' }}>
+              <p style={{ fontSize: '20px', fontWeight: '700', color: '#0369a1', margin: '0 0 14px 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>🏥 介護適性評価</p>
+              <p style={{ fontSize: '22px', color: '#0c4a6e', margin: '0', lineHeight: '1.9', whiteSpace: 'pre-wrap' }}>
                 {evaluation.care_assessment || '介護経験豊富で日本語能力も高く、即戦力として期待できる人材。副主任経験もあり、リーダーシップも発揮できる。'}
               </p>
             </div>
 
             {/* Disclaimer */}
-            <div style={{ padding: '16px 18px', backgroundColor: '#fff3cd', border: '2px solid #ffecb5', borderRadius: '8px', fontSize: '14px', color: '#856404', lineHeight: '1.8' }}>
+            <div style={{ padding: '16px 18px', backgroundColor: '#fff3cd', border: '2px solid #ffecb5', borderRadius: '8px', fontSize: '18px', color: '#856404', lineHeight: '1.8' }}>
               <p style={{ margin: '0' }}>⚠️ このスコアは面接発言からの推定値です。<br />実際の現場適性は試用期間・現場観察で別途確認が必要です。</p>
             </div>
           </div>
