@@ -17,6 +17,7 @@ interface ClientData {
 interface EvaluationData {
   id: string;
   candidate_name: string;
+  client_id: string;
   total_display_score: number;
   verdict: string;
   created_at: string;
@@ -48,7 +49,7 @@ export default function ClientsPage() {
       const counts: Record<string, number> = {};
       (clientData.clients || []).forEach((client: ClientData) => {
         counts[client.id] = (evalData.evaluations || []).filter(
-          (e: EvaluationData) => e.candidate_id ? true : false
+          (e: EvaluationData) => e.client_id === client.id
         ).length;
       });
       setEvaluationCounts(counts);
