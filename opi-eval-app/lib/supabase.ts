@@ -174,6 +174,16 @@ export async function getEvaluations(candidateId: string) {
   return data as Evaluation[];
 }
 
+export async function getEvaluationsByClient(clientId: string) {
+  const { data, error } = await supabase
+    .from('evaluations')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data as Evaluation[];
+}
+
 export async function getEvaluation(id: string) {
   const { data, error } = await supabase
     .from('evaluations')

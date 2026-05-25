@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
             name: clientName,
             facility_type: '',
             contact_name: '',
+            contact_email: '',
             safety_threshold_pct: 50,
             total_threshold_pct: 80,
           }])
@@ -95,10 +96,22 @@ export async function POST(request: NextRequest) {
     const displayScores = calculateDisplayScores(scoring.ai_total, 0);
 
     // Step 6: Prepare evaluation data
+    // Get client_id from candidate if not already set
+    let evaluationClientId = null;
+    if (!evaluationClientId) {
+      const { data: candidateData } = await supabase
+        .from('candidates')
+        .select('client_id')
+        .eq('id', candidateId)
+        .single();
+      evaluationClientId = candidateData?.client_id || null;
+    }
+
     const evaluationData = {
       id: evaluationId,
       candidate_id: candidateId,
       candidate_name: candidateName,
+      client_id: evaluationClientId,
       client_name: clientName,
       transcription,
 
@@ -212,13 +225,18 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const clientId = searchParams.get('client_id');
+
     // DEMO_MODE: Return cached evaluations
     console.log('GET /evaluations - DEMO_MODE:', process.env.NEXT_PUBLIC_DEMO_MODE);
     console.log('GET /evaluations - Cache size:', evaluationCache.size);
-    console.log('GET /evaluations - Cache keys:', Array.from(evaluationCache.keys()));
 
     if (process.env.NEXT_PUBLIC_DEMO_MODE === 'true') {
-      const evaluations = Array.from(evaluationCache.values());
+      let evaluations = Array.from(evaluationCache.values());
+      if (clientId) {
+        evaluations = evaluations.filter((e) => e.client_id === clientId);
+      }
       console.log('GET /evaluations - Returning', evaluations.length, 'evaluations');
       return NextResponse.json({
         evaluations,
@@ -227,7 +245,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Production: Fetch from database
-    const { data, error } = await supabase.from('evaluations').select('*');
+    let query = supabase.from('evaluations').select('*');
+    if (clientId) {
+      query = query.eq('client_id', clientId);
+    }
+    const { data, error } = await query;
 
     if (error) {
       return NextResponse.json(

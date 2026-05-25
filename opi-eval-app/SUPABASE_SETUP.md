@@ -34,10 +34,10 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-actual-anon-key-here
 
 # Google Generative AI API Key (Gemini)
-GOOGLE_GENERATIVE_AI_KEY=AIzaSyAVna1vgZdSPt_4n_tQRK11MYoNZhckTzA
+GOOGLE_GENERATIVE_AI_KEY=your-google-api-key-here
 
 # Anthropic API Key
-ANTHROPIC_API_KEY=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
+ANTHROPIC_API_KEY=your-anthropic-api-key-here
 
 # Demo Mode (OFF)
 NEXT_PUBLIC_DEMO_MODE=false

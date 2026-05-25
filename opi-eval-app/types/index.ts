@@ -96,6 +96,7 @@ export interface Evaluation {
   id: string;
   candidate_id: string;
   candidate_name: string;
+  client_id: string;
   client_name: string;
   transcription: string;
 
