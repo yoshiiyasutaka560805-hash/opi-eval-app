@@ -530,7 +530,7 @@ export default function DashboardPage() {
                       contentStyle={{ background: '#161B22', border: '1px solid #30363D', borderRadius: 8 }}
                       labelStyle={{ color: '#8B949E', fontSize: 11 }}
                       itemStyle={{ color: '#E3B341' }}
-                      formatter={(v: number) => [`$${fmt(v)}`, 'Close']}
+                      formatter={(v) => [`$${fmt(Number(v))}`, 'Close']}
                     />
                     <Line
                       type="monotone"
