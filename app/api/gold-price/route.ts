@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchAllTimeframes, generateDemoOHLCV } from '@/lib/goldPrice';
+import { fetchAllTimeframes } from '@/lib/goldPrice';
 import { calculateAllIndicators } from '@/lib/technical';
 import { calculateFibonacci } from '@/lib/fibonacci';
 import { detectOrderBlocks } from '@/lib/orderBlocks';
@@ -14,44 +14,29 @@ import { Timeframe } from '@/types';
 
 export const maxDuration = 60;
 
-function buildDemoResponse() {
+function staticDemoResponse(errorMsg: string) {
   const price = 2345.67;
-  const demo5m   = generateDemoOHLCV(price, 200, 5);
-  const demo15m  = generateDemoOHLCV(price, 200, 15);
-  const demo30m  = generateDemoOHLCV(price, 200, 30);
-  const demo1h   = generateDemoOHLCV(price, 200, 60);
-  const demo4h   = generateDemoOHLCV(price, 200, 240);
-  const demoDay  = generateDemoOHLCV(price, 200, 1440);
   const sessionInfo = getCurrentSession();
-  const priceData = {
-    currentPrice: price,
-    previousClose: 2338.20,
-    change: 7.47,
-    changePct: 0.32,
-    isDemo: true,
-    timeframes: { '5min': demo5m, '15min': demo15m, '30min': demo30m, '1h': demo1h, '4h': demo4h, 'daily': demoDay },
-  };
-  const indicatorsPerTF = Object.fromEntries(
-    (Object.keys(priceData.timeframes) as Timeframe[]).map(tf => [
-      tf,
-      calculateAllIndicators(priceData.timeframes[tf]),
-    ])
-  ) as Record<Timeframe, ReturnType<typeof calculateAllIndicators>>;
-  const mtfResult = analyzeMultiTimeframe(priceData.timeframes, sessionInfo);
-  const structure = analyzeMarketStructure(demoDay);
-  const fibDaily  = calculateFibonacci(demoDay, price, 'daily');
   return NextResponse.json({
-    priceData,
+    priceData: {
+      currentPrice: price,
+      previousClose: 2338.20,
+      change: 7.47,
+      changePct: 0.32,
+      isDemo: true,
+      timeframes: {},
+    },
     sessionInfo,
-    indicators: indicatorsPerTF,
-    mtf: { analyses: mtfResult.analyses, totalScore: mtfResult.totalScore, direction: mtfResult.direction },
-    structure,
+    indicators: {},
+    mtf: { analyses: [], totalScore: 0, direction: 'flat' },
+    structure: { trend: 'ranging', lastSwingHigh: price * 1.01, lastSwingLow: price * 0.99, choch: false, bos: false, description: 'Demo mode' },
     divergences: [],
     patterns: [],
-    fibonacci: { daily: fibDaily, '4h': fibDaily, '1h': fibDaily },
+    fibonacci: { daily: null, '4h': null, '1h': null },
     orderBlocks: [],
     fvgs: [],
     liquidityZones: [],
+    _error: errorMsg,
   });
 }
 
@@ -131,7 +116,8 @@ export async function GET() {
       fvgs,
       liquidityZones,
     });
-  } catch {
-    return buildDemoResponse();
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    return staticDemoResponse(msg);
   }
 }
