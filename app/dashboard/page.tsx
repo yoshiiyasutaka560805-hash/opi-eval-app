@@ -164,8 +164,9 @@ export default function DashboardPage() {
     try {
       const res = await fetch('/api/gold-price');
       const data = await res.json();
-      if (data && data.priceData) {
-        setPriceData(data as GoldPriceResponse);
+      const pd = data?.priceData ?? data;
+      if (pd && typeof pd.currentPrice === 'number') {
+        setPriceData(pd as GoldPriceResponse);
         setLastUpdated(new Date());
       }
     } catch (_) {
