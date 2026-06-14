@@ -131,11 +131,9 @@ export default function DashboardPage() {
   const [mt5CopyText, setMt5CopyText] = useState('');
   const [secondsToUpdate, setSecondsToUpdate] = useState<number | null>(null);
 
-  // ── auto price refresh ───────────────────────────────────────────────────
+  // ── initial price load (no auto-interval to preserve API quota) ──────────
   useEffect(() => {
     loadPriceData();
-    const interval = setInterval(loadPriceData, 60_000);
-    return () => clearInterval(interval);
   }, []);
 
   // ── countdown ticker ─────────────────────────────────────────────────────
@@ -382,9 +380,11 @@ export default function DashboardPage() {
                 🌐 {prediction.sessionInfo.name}
               </span>
             )}
-            {secondsToUpdate != null && (
+            {lastUpdated && (
               <span className="text-[#8B949E] text-xs">
-                次回更新: {secondsToUpdate}秒後
+                {Math.floor((Date.now() - lastUpdated.getTime()) / 60000) < 1
+                  ? 'たった今更新'
+                  : `${Math.floor((Date.now() - lastUpdated.getTime()) / 60000)}分前に更新`}
               </span>
             )}
             {priceData?.isDemo && (
