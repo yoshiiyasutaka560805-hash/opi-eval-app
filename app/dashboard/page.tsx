@@ -190,7 +190,8 @@ export default function DashboardPage() {
     try {
       const res = await fetch('/api/predict', { method: 'POST' });
       if (res.ok) {
-        const data: Prediction = await res.json();
+        const body = await res.json();
+        const data: Prediction = body.prediction ?? body;
         setPrediction(data);
         localStorage.setItem('goldai_lastRun', String(Date.now()));
 
@@ -219,7 +220,10 @@ export default function DashboardPage() {
           });
         }
       }
-    } catch (_) {
+    } catch (e) {
+      setCooldownWarning('予測に失敗しました。もう一度お試しください。');
+      setTimeout(() => setCooldownWarning(null), 6000);
+      console.error(e);
     } finally {
       setLoading(false);
     }
