@@ -1,0 +1,8 @@
+{
+  "builds": [
+    {
+      "src": "fx-prediction-app/package.json",
+      "use": "@vercel/next"
+    }
+  ]
+}
