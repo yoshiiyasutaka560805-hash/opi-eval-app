@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+
+export const maxDuration = 60;
+
 import { fetchAllEconomicData } from '@/lib/economic';
 import { fetchCOTData } from '@/lib/cot';
 import { getUpcomingEvents, isInsideNewsBlackout } from '@/lib/eventCalendar';

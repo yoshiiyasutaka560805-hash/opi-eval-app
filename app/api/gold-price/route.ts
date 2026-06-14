@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchAllTimeframes } from '@/lib/goldPrice';
+import { fetchAllTimeframes, generateDemoOHLCV } from '@/lib/goldPrice';
 import { calculateAllIndicators } from '@/lib/technical';
 import { calculateFibonacci } from '@/lib/fibonacci';
 import { detectOrderBlocks } from '@/lib/orderBlocks';
@@ -11,6 +11,49 @@ import { detectPatterns } from '@/lib/patterns';
 import { analyzeMultiTimeframe } from '@/lib/multiTimeframe';
 import { getCurrentSession } from '@/lib/session';
 import { Timeframe } from '@/types';
+
+export const maxDuration = 60;
+
+function buildDemoResponse() {
+  const price = 2345.67;
+  const demo5m   = generateDemoOHLCV(price, 200, 5);
+  const demo15m  = generateDemoOHLCV(price, 200, 15);
+  const demo30m  = generateDemoOHLCV(price, 200, 30);
+  const demo1h   = generateDemoOHLCV(price, 200, 60);
+  const demo4h   = generateDemoOHLCV(price, 200, 240);
+  const demoDay  = generateDemoOHLCV(price, 200, 1440);
+  const sessionInfo = getCurrentSession();
+  const priceData = {
+    currentPrice: price,
+    previousClose: 2338.20,
+    change: 7.47,
+    changePct: 0.32,
+    isDemo: true,
+    timeframes: { '5min': demo5m, '15min': demo15m, '30min': demo30m, '1h': demo1h, '4h': demo4h, 'daily': demoDay },
+  };
+  const indicatorsPerTF = Object.fromEntries(
+    (Object.keys(priceData.timeframes) as Timeframe[]).map(tf => [
+      tf,
+      calculateAllIndicators(priceData.timeframes[tf]),
+    ])
+  ) as Record<Timeframe, ReturnType<typeof calculateAllIndicators>>;
+  const mtfResult = analyzeMultiTimeframe(priceData.timeframes, sessionInfo);
+  const structure = analyzeMarketStructure(demoDay);
+  const fibDaily  = calculateFibonacci(demoDay, price, 'daily');
+  return NextResponse.json({
+    priceData,
+    sessionInfo,
+    indicators: indicatorsPerTF,
+    mtf: { analyses: mtfResult.analyses, totalScore: mtfResult.totalScore, direction: mtfResult.direction },
+    structure,
+    divergences: [],
+    patterns: [],
+    fibonacci: { daily: fibDaily, '4h': fibDaily, '1h': fibDaily },
+    orderBlocks: [],
+    fvgs: [],
+    liquidityZones: [],
+  });
+}
 
 export async function GET() {
   try {
@@ -88,11 +131,7 @@ export async function GET() {
       fvgs,
       liquidityZones,
     });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json(
-      { error: 'Failed to fetch gold price data', details: message },
-      { status: 500 }
-    );
+  } catch {
+    return buildDemoResponse();
   }
 }
