@@ -7,7 +7,8 @@
       "Bash(npm install *)",
       "Bash(npx create-next-app@latest opi-eval-app --typescript --tailwind --app --no-git --no-eslint --skip-install)",
       "mcp__c93d2842-cc78-4bf1-8825-764a5613b0ae__list_teams",
-      "mcp__c93d2842-cc78-4bf1-8825-764a5613b0ae__get_deployment_build_logs"
+      "mcp__c93d2842-cc78-4bf1-8825-764a5613b0ae__get_deployment_build_logs",
+      "mcp__c93d2842-cc78-4bf1-8825-764a5613b0ae__list_deployments"
     ]
   }
 }
