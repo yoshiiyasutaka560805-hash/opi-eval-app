@@ -130,6 +130,7 @@ export default function DashboardPage() {
   const [accuracy, setAccuracy] = useState<PredictionAccuracy | null>(null);
   const [mt5CopyText, setMt5CopyText] = useState('');
   const [secondsToUpdate, setSecondsToUpdate] = useState<number | null>(null);
+  const [demoReason, setDemoReason] = useState<string | null>(null);
 
   // ── initial price load (no auto-interval to preserve API quota) ──────────
   useEffect(() => {
@@ -166,6 +167,11 @@ export default function DashboardPage() {
       if (pd && typeof pd.currentPrice === 'number') {
         setPriceData(pd as GoldPriceResponse);
         setLastUpdated(new Date());
+        if (pd.isDemo) {
+          setDemoReason(data._error ?? 'APIキー未設定');
+        } else {
+          setDemoReason(null);
+        }
       }
     } catch (_) {
     } finally {
@@ -315,6 +321,11 @@ export default function DashboardPage() {
             ⚠️ {cooldownWarning}
           </div>
         )}
+        {priceData?.isDemo && demoReason && (
+          <div className="bg-[#2D1F00]/90 border-b border-[#D29922]/60 px-4 py-2 text-center text-xs text-[#D29922]">
+            ⚠️ デモデータ表示中: {demoReason}
+          </div>
+        )}
       </div>
 
       {/* ── Main scroll area ──────────────────────────────────────────────── */}
@@ -325,6 +336,7 @@ export default function DashboardPage() {
             (prediction?.isNewsBlackout ? 40 : 0) +
             (prediction?.weekendRisk ? 40 : 0) +
             (cooldownWarning ? 40 : 0) +
+            (priceData?.isDemo && demoReason ? 32 : 0) +
             64 +
             'px',
         }}
@@ -339,6 +351,7 @@ export default function DashboardPage() {
               (prediction?.isNewsBlackout ? 40 : 0) +
               (prediction?.weekendRisk ? 40 : 0) +
               (cooldownWarning ? 40 : 0) +
+              (priceData?.isDemo && demoReason ? 32 : 0) +
               'px',
           }}
         >
@@ -392,7 +405,12 @@ export default function DashboardPage() {
               </span>
             )}
             {priceData?.isDemo && (
-              <span className="text-[#D29922] text-xs border border-[#D29922]/40 rounded px-2 py-0.5">DEMO</span>
+              <span
+                className="text-[#D29922] text-xs border border-[#D29922]/40 rounded px-2 py-0.5 cursor-help"
+                title={demoReason ?? 'デモデータ使用中'}
+              >
+                DEMO {demoReason ? '⚠️' : ''}
+              </span>
             )}
           </div>
         </Card>

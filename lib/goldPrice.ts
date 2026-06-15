@@ -65,6 +65,10 @@ export async function fetchRealtimePrice(): Promise<{ price: number; previousClo
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
+    if (data['Note']) throw new Error(`APIレート制限: 1日25回の上限に達しました`);
+    if (data['Information']) throw new Error(`APIプレミアム必要: ${data['Information'].slice(0, 80)}`);
+    if (data['Error Message']) throw new Error(`APIエラー: ${data['Error Message'].slice(0, 80)}`);
+
     const rate = data['Realtime Currency Exchange Rate'];
     if (!rate) throw new Error('No exchange rate data');
 
@@ -105,9 +109,13 @@ export async function fetchIntradayCandles(
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
+    if (data['Note']) throw new Error(`APIレート制限: 1日25回の上限に達しました`);
+    if (data['Information']) throw new Error(`APIプレミアム必要`);
+    if (data['Error Message']) throw new Error(`APIエラー: ${data['Error Message'].slice(0, 80)}`);
+
     const seriesKey = `Time Series FX (${interval})`;
     const series = data[seriesKey];
-    if (!series) throw new Error('No time series data');
+    if (!series) throw new Error('No time series data (seriesKey not found in response)');
 
     const candles: OHLCV[] = Object.entries(series)
       .map(([dateStr, values]) => {
@@ -151,6 +159,10 @@ export async function fetchDailyCandles(): Promise<OHLCV[]> {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+
+    if (data['Note']) throw new Error(`APIレート制限: 1日25回の上限に達しました`);
+    if (data['Information']) throw new Error(`APIプレミアム必要`);
+    if (data['Error Message']) throw new Error(`APIエラー: ${data['Error Message'].slice(0, 80)}`);
 
     const series = data['Time Series FX (Daily)'];
     if (!series) throw new Error('No daily time series data');
@@ -199,35 +211,21 @@ export async function fetchAllTimeframes(): Promise<GoldPriceResponse> {
   const cached = getCache<GoldPriceResponse>(cacheKey);
   if (cached) return cached;
 
-  const isDemo = !API_KEY;
+  if (!API_KEY) {
+    throw new Error('ALPHA_VANTAGE_API_KEY が設定されていません。Vercel環境変数を確認してください。');
+  }
 
   try {
     const { price, previousClose } = await fetchRealtimePrice();
 
-    let tf5min:  OHLCV[];
-    let tf15min: OHLCV[];
-    let tf30min: OHLCV[];
-    let tf1h:    OHLCV[];
-    let tf4h:    OHLCV[];
-    let tfDaily: OHLCV[];
-
-    if (isDemo) {
-      tf5min  = generateDemoOHLCV(price, 200, 5);
-      tf15min = generateDemoOHLCV(price, 200, 15);
-      tf30min = generateDemoOHLCV(price, 200, 30);
-      tf1h    = generateDemoOHLCV(price, 200, 60);
-      tf4h    = aggregateTo4H(generateDemoOHLCV(price, 800, 60));
-      tfDaily = generateDemoOHLCV(price, 200, 1440);
-    } else {
-      [tf5min, tf15min, tf30min, tf1h, tfDaily] = await Promise.all([
-        fetchIntradayCandles('5min'),
-        fetchIntradayCandles('15min'),
-        fetchIntradayCandles('30min'),
-        fetchIntradayCandles('60min'),
-        fetchDailyCandles(),
-      ]);
-      tf4h = aggregateTo4H(tf1h);
-    }
+    const [tf5min, tf15min, tf30min, tf1h, tfDaily] = await Promise.all([
+      fetchIntradayCandles('5min'),
+      fetchIntradayCandles('15min'),
+      fetchIntradayCandles('30min'),
+      fetchIntradayCandles('60min'),
+      fetchDailyCandles(),
+    ]);
+    const tf4h = aggregateTo4H(tf1h);
 
     const change    = Math.round((price - previousClose) * 100) / 100;
     const changePct = Math.round((change / previousClose) * 10000) / 100;
@@ -246,7 +244,7 @@ export async function fetchAllTimeframes(): Promise<GoldPriceResponse> {
         'daily': tfDaily,
       },
       lastUpdated: new Date().toISOString(),
-      isDemo,
+      isDemo: false,
     };
 
     setCache(cacheKey, response, CACHE_TTL['5min']);
