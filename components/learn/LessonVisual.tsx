@@ -28,13 +28,13 @@ export default function LessonVisual({ visual }: Props) {
   const Component = REGISTRY[visual.componentKey];
   if (!Component) {
     return (
-      <div className="bg-[#161B22] border border-[#30363D] rounded-xl p-6 text-center text-[#8B949E]">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center text-gray-400 shadow-sm">
         図解を準備中です...
       </div>
     );
   }
   return (
-    <div className="bg-[#161B22] border border-[#30363D] rounded-xl p-5">
+    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm overflow-hidden">
       <Component {...(visual.data ?? {})} />
     </div>
   );

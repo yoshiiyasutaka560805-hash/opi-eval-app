@@ -23,9 +23,7 @@ export default function QuizWidget({ quiz, onComplete }: Props) {
     if (phase !== 'answering') return;
     setSelected(idx);
     setPhase('answered');
-    if (idx === q.correctIndex) {
-      setScore((s) => s + 1);
-    }
+    if (idx === q.correctIndex) setScore((s) => s + 1);
   }
 
   function handleNext() {
@@ -44,111 +42,99 @@ export default function QuizWidget({ quiz, onComplete }: Props) {
     const finalScore =
       selected !== null && selected === quiz[quiz.length - 1].correctIndex ? score : score;
     return (
-      <div className="bg-[#161B22] border border-[#30363D] rounded-xl p-6 text-center space-y-4">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center shadow-sm space-y-3">
         <div className="text-4xl">{finalScore === quiz.length ? '🎉' : '📝'}</div>
-        <div className="text-xl font-bold text-[#E6EDF3]">
-          {finalScore}/{quiz.length} 問正解
-        </div>
-        <div className="text-[#8B949E] text-sm">
+        <div className="text-xl font-bold text-gray-900">{finalScore}/{quiz.length} 問正解</div>
+        <div className="text-sm text-gray-500">
           {finalScore === quiz.length
             ? '全問正解！素晴らしいです。'
             : finalScore >= quiz.length / 2
             ? 'よくできました。復習してさらに定着させましょう。'
             : 'もう一度レッスンを読み直してみましょう。'}
         </div>
-        <div className="inline-block bg-[#E3B341]/20 text-[#E3B341] rounded-full px-4 py-1 text-sm font-bold">
+        <div className="inline-block bg-green-100 text-green-700 rounded-full px-4 py-1 text-sm font-bold">
           レッスン完了 ✓
         </div>
       </div>
     );
   }
 
-  const optionLabels = ['A', 'B', 'C', 'D'];
+  const labels = ['A', 'B', 'C', 'D'];
 
-  function getOptionStyle(idx: number) {
+  function optionCls(idx: number) {
     if (phase === 'answering') {
-      return 'bg-[#21262D] border-[#30363D] hover:border-[#58A6FF] cursor-pointer';
+      return 'border-gray-200 bg-white text-gray-700 hover:border-blue-400 hover:bg-blue-50 cursor-pointer';
     }
-    if (idx === q.correctIndex) {
-      return 'bg-[#3FB950]/20 border-[#3FB950]';
-    }
-    if (idx === selected && idx !== q.correctIndex) {
-      return 'bg-[#F85149]/20 border-[#F85149]';
-    }
-    return 'bg-[#21262D] border-[#30363D] opacity-50';
+    if (idx === q.correctIndex) return 'border-green-400 bg-green-50 text-green-800';
+    if (idx === selected) return 'border-red-400 bg-red-50 text-red-800';
+    return 'border-gray-200 bg-white text-gray-400 opacity-50';
   }
 
   return (
-    <div className="bg-[#161B22] border border-[#30363D] rounded-xl p-5 space-y-4">
-      {/* Header */}
+    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm space-y-4">
+      {/* ヘッダー */}
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-[#8B949E]">
-          クイズ {current + 1} / {quiz.length}
+        <span className="text-xs font-semibold text-gray-400">
+          問 {current + 1} / {quiz.length}
         </span>
         <div className="flex gap-1">
           {quiz.map((_, i) => (
             <div
               key={i}
               className={`w-2 h-2 rounded-full ${
-                i < current
-                  ? 'bg-[#3FB950]'
-                  : i === current
-                  ? 'bg-[#E3B341]'
-                  : 'bg-[#30363D]'
+                i < current ? 'bg-green-400' : i === current ? 'bg-blue-500' : 'bg-gray-200'
               }`}
             />
           ))}
         </div>
       </div>
 
-      {/* Question */}
-      <div className="text-[#E6EDF3] font-medium text-sm leading-relaxed">
-        {q.question}
-      </div>
+      {/* 問題文 */}
+      <p className="text-sm font-medium text-gray-800 leading-relaxed">{q.question}</p>
 
-      {/* Options */}
+      {/* 選択肢 */}
       <div className="space-y-2">
         {q.options.map((opt, idx) => (
           <button
             key={idx}
             onClick={() => handleSelect(idx)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left text-sm transition-all ${getOptionStyle(idx)}`}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left text-sm transition-all ${optionCls(idx)}`}
           >
             <span
               className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border ${
                 phase === 'answered' && idx === q.correctIndex
-                  ? 'bg-[#3FB950] border-[#3FB950] text-white'
+                  ? 'bg-green-500 border-green-500 text-white'
                   : phase === 'answered' && idx === selected && idx !== q.correctIndex
-                  ? 'bg-[#F85149] border-[#F85149] text-white'
-                  : 'border-[#30363D] text-[#8B949E]'
+                  ? 'bg-red-500 border-red-500 text-white'
+                  : 'border-gray-300 text-gray-500'
               }`}
             >
-              {optionLabels[idx]}
+              {labels[idx]}
             </span>
-            <span className="text-[#E6EDF3]">{opt}</span>
+            <span className="flex-1">{opt}</span>
             {phase === 'answered' && idx === q.correctIndex && (
-              <span className="ml-auto text-[#3FB950] text-xs font-bold">✓ 正解</span>
+              <span className="text-green-600 text-xs font-bold">✓ 正解</span>
             )}
             {phase === 'answered' && idx === selected && idx !== q.correctIndex && (
-              <span className="ml-auto text-[#F85149] text-xs font-bold">✗ 不正解</span>
+              <span className="text-red-500 text-xs font-bold">✗</span>
             )}
           </button>
         ))}
       </div>
 
-      {/* Explanation */}
+      {/* 解説 */}
       {phase === 'answered' && (
-        <div className="bg-[#0D1117] rounded-lg p-3 border border-[#30363D]">
-          <div className="text-xs font-bold text-[#E3B341] mb-1">解説</div>
-          <div className="text-xs text-[#8B949E] leading-relaxed">{q.explanation}</div>
+        <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
+          <div className="text-xs font-bold text-blue-600 mb-1">解説</div>
+          <div className="text-xs text-gray-600 leading-relaxed">{q.explanation}</div>
         </div>
       )}
 
-      {/* Next button */}
+      {/* 次へボタン */}
       {phase === 'answered' && (
         <button
           onClick={handleNext}
-          className="w-full py-2.5 bg-[#E3B341] text-[#0D1117] font-bold rounded-lg hover:opacity-90 transition text-sm"
+          className="w-full py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition text-sm"
         >
           {isLast ? '結果を見る →' : '次の問題 →'}
         </button>

@@ -7,7 +7,6 @@ const Nav = () => (
     <a href="/dashboard" className="text-sm text-[#8B949E] hover:text-[#E6EDF3]">ダッシュボード</a>
     <a href="/history" className="text-sm text-[#8B949E] hover:text-[#E6EDF3]">予測履歴</a>
     <a href="/pricing" className="text-sm text-[#8B949E] hover:text-[#E6EDF3]">料金</a>
-    <a href="/learn" className="text-sm text-[#8B949E] hover:text-[#E6EDF3]">📚 会計学習</a>
   </nav>
 );
 

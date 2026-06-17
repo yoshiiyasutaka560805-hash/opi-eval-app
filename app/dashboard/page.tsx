@@ -358,7 +358,6 @@ export default function DashboardPage() {
           <div className="mx-auto max-w-lg px-4 h-14 flex items-center justify-between">
             <span className="text-[#E3B341] font-bold text-lg tracking-wide">🪙 GOLD AI</span>
             <div className="flex items-center gap-3">
-              <a href="/learn" className="text-xs text-[#8B949E] hover:text-[#E6EDF3] hidden sm:block">📚 会計学習</a>
               <button
                 onClick={enableNotifications}
                 className={`text-xl ${notificationEnabled ? 'text-[#E3B341]' : 'text-[#8B949E]'}`}
