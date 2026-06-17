@@ -10,7 +10,8 @@
       "mcp__c93d2842-cc78-4bf1-8825-764a5613b0ae__get_deployment_build_logs",
       "mcp__c93d2842-cc78-4bf1-8825-764a5613b0ae__list_deployments",
       "Bash(mkdir -p /home/user/opi-eval-app/components/learn/visuals)",
-      "Bash(mkdir -p /home/user/opi-eval-app/app/learn/\\\\[moduleId\\\\]/\\\\[lessonId\\\\])"
+      "Bash(mkdir -p /home/user/opi-eval-app/app/learn/\\\\[moduleId\\\\]/\\\\[lessonId\\\\])",
+      "Bash(npx next *)"
     ]
   }
 }
